@@ -6,6 +6,7 @@ on:
 jobs:
   build-ios-sim:
     runs-on: macos-14
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -16,8 +17,17 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Disable Swift Package Manager (use CocoaPods)
+        run: flutter config --no-enable-swift-package-manager
+
       - name: Flutter pub get
         run: flutter pub get
+
+      - name: Pod install
+        run: |
+          cd ios
+          pod install --repo-update
+          cd ..
 
       - name: Build iOS (Simulator)
         run: flutter build ios --simulator --debug
